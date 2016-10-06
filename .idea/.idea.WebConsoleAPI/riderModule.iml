@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="RIDER_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$/../..">
+      <sourceFolder url="file://$MODULE_DIR$/../../WebConsoleAPI" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../MongoConnector" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../Infrastructure" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Infrastructure/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Infrastructure/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../MongoConnector/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../MongoConnector/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../WebConsoleAPI/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../WebConsoleAPI/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../packages" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
