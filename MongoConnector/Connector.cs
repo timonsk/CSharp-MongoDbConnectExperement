@@ -20,7 +20,6 @@ namespace MongoConnector
 
         public async void InsertProduct(IProduct product)
         {
-            ;
             var products = DocumentCreator.Create(product);
             var collection = Database.GetCollection<BsonDocument>(product.GetType().Name);
             await collection.InsertOneAsync(products);
