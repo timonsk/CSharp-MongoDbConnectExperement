@@ -8,6 +8,9 @@ namespace WebConsoleAPI.Controllers
 {
     public class ProductsController : ApiController
     {
+        private const string MongoConnectionString = @"your connection string";
+        private const string MongoDbName = @"yandb";
+
         private readonly Product[] products =
         {
             new Product {Id = 1, Name = "Tomato Soup", Category = "Groceries", Price = 1},
@@ -24,7 +27,7 @@ namespace WebConsoleAPI.Controllers
         [HttpPost]
         public IHttpActionResult AddProduct(Product product)
         {
-            var connector = new Connector();
+            var connector = new Connector(MongoDbName, MongoConnectionString);
             connector.InsertProduct(product);
             return Ok(product);
         }

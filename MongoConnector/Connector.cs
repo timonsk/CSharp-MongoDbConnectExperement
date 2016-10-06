@@ -1,6 +1,4 @@
-﻿using System;
-using Infrastructure.Extensions;
-using Infrastructure.Interfaces;
+﻿using Infrastructure.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -8,28 +6,23 @@ namespace MongoConnector
 {
     public class Connector
     {
-        private const string MongoConnectionString = @"connection_string_here";
         protected static IMongoClient Client;
         protected static IMongoDatabase Database;
+        protected static DocumentCreator DocumentCreator;
 
-        public Connector()
+        public Connector(string dbName, string connectionString)
         {
-            Client = new MongoClient(MongoConnectionString);
-            Database = Client.GetDatabase("yandb");
+            Client = new MongoClient(connectionString);
+            Database = Client.GetDatabase(dbName);
+            DocumentCreator = new DocumentCreator();
         }
 
 
         public async void InsertProduct(IProduct product)
         {
-            var products = new BsonDocument
-            {
-                { ObjectName.GetPropertyName(() => product.Id), product.Id},
-                { ObjectName.GetPropertyName(() => product.Name), product.Name},
-                { ObjectName.GetPropertyName(() => product.Category), product.Category},
-                { ObjectName.GetPropertyName(() => product.Price), product.Price.ToString()},
-            };
-
-            var collection = Database.GetCollection<BsonDocument>("products");
+            ;
+            var products = DocumentCreator.Create(product);
+            var collection = Database.GetCollection<BsonDocument>(product.GetType().Name);
             await collection.InsertOneAsync(products);
         }
     }

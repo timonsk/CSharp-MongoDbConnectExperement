@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq.Expressions;
-using System.Reflection;
 
-namespace Infrastructure.Extensions
+namespace MongoConnector.Extensions
 {
     public static class ObjectName
     {
@@ -13,7 +11,8 @@ namespace Infrastructure.Extensions
 
             if (me == null)
             {
-                throw new ArgumentException("You must pass a lambda of the form: '() => Class.Property' or '() => object.Property'");
+                throw new ArgumentException(
+                    "You must pass a lambda of the form: '() => Class.Property' or '() => object.Property'");
             }
 
             return me.Member.Name;
