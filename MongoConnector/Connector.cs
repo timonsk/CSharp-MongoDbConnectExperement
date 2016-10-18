@@ -1,55 +1,86 @@
-﻿using System.ComponentModel;
+﻿using System;
 using System.Linq;
-using Infrastructure.Interfaces;
 using MongoConnector.Exceptions;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace MongoConnector
 {
-	public class Connector
-	{
-		protected static IMongoClient Client;
-		protected static IMongoDatabase Database;
-		protected static DocumentCreator DocumentCreator;
+    public class Connector
+    {
+        protected static IMongoClient Client;
+        protected static IMongoDatabase Database;
+        protected static DocumentCreator DocumentCreator;
 
-		public Connector(string dbName, string connectionString)
-		{
-			Client = new MongoClient(connectionString);
-			Database = Client.GetDatabase(dbName);
-			DocumentCreator = new DocumentCreator();
-		}
+        public Connector(string dbName, string connectionString)
+        {
+            Client = new MongoClient(connectionString);
+            Database = Client.GetDatabase(dbName);
+            DocumentCreator = new DocumentCreator();
+        }
 
-	    public async void Create<T>(T obj)
-	    {
-	        //var products = DocumentCreator.Create(obj);
-	        var collection = Database.GetCollection<BsonDocument>(obj.GetType().Name);
-	        await collection.InsertOneAsync(obj.ToBsonDocument());
-	    }
+        public async void Create<T>(T obj)
+        {
+            var collection = Database.GetCollection<BsonDocument>(obj.GetType().Name);
+            await collection.InsertOneAsync(obj.ToBsonDocument());
+        }
 
-	    public async void Update<T>(T obj)
-	    {
-	        var collection = Database.GetCollection<BsonDocument>(obj.GetType().Name);
-	        var id = obj.GetType().GetProperties().FirstOrDefault(p => p.Name.ToLower() == "id");
-	        if (id == null)
-	        {
-  	           throw new EmptyClassPropertyException("id");
-	        }
-	        var filter = Builders<BsonDocument>.Filter.Eq("_"+id.Name.ToLower(), id.GetValue(obj));
-	        var result = await collection.Find(filter).ToListAsync();
+        public async void Update<T>(T obj)
+        {
+            var collection = Database.GetCollection<BsonDocument>(obj.GetType().Name);
+            var id = obj.GetType().GetProperties().FirstOrDefault(p => p.Name.ToLower() == "id");
+            if (id == null)
+            {
+                throw new EmptyClassPropertyException("id");
+            }
+            var filter = Builders<BsonDocument>.Filter.Eq("_" + id.Name.ToLower(), id.GetValue(obj));
+            var document = (await collection.Find(filter).ToListAsync()).First();
+            var updatedObj = obj.ToBsonDocument();
+              updatedObj.Remove("_id");
 
-	        var document = result.First();
+            await collection.UpdateOneAsync(document, updatedObj);
+        }
 
-	        //var product = DocumentCreator.Update(obj, document);
-	         await collection.UpdateOneAsync(new BsonDocumentFilterDefinition<BsonDocument>(document), obj.ToBsonDocument());
-	    }
+        private BsonDocument Update<T>(T obj, BsonDocument document)
+        {
+            document.Remove("_id");
+            //ValidateObject(obj);
+            //var props = obj.GetType().GetProperties().ToList();
+            //var id = props.FirstOrDefault(p => p.Name.ToLower() == "id");
 
+            //if (id != null)
+            //{
+            //    obj.GetType().
+            //    props.Remove(id);
+            //}
 
-	    public async void InsertProduct(IProduct product)
-		{
-			var products = DocumentCreator.Create(product);
-			var collection = Database.GetCollection<BsonDocument>(product.GetType().Name);
-			await collection.InsertOneAsync(products);
-		}
-	}
+            //foreach (var prop in props)
+            //{
+            //    var val = prop.GetValue(obj);
+            //    var name = prop.Name;
+            //    var element = document.FirstOrDefault(e => e.Name == name);
+            //    if (element.Value.ToJson() != val.ToJson())
+            //    {
+            //        document.Set(name, val);
+            //    }
+            //}
+
+            return document;
+        }
+
+        private void ValidateObject<T>(T obj)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException("obj");
+            }
+
+            var props = obj.GetType().GetProperties();
+
+            if (!props.Any())
+            {
+                throw new EmptyClassPropertyException("No public property found in obj");
+            }
+        }
+    }
 }
