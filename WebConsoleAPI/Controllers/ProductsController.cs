@@ -8,7 +8,7 @@ namespace WebConsoleAPI.Controllers
 {
     public class ProductsController : ApiController
     {
-        private const string MongoConnectionString = @"mongodb://timonsk:couch1991@ds033337.mongolab.com:33337/yandb";
+        private const string MongoConnectionString = @"mongodb://timonsk:password@ds033337.mongolab.com:33337/yandb";
         private const string MongoDbName = @"yandb";
 
         private readonly Product[] products =
