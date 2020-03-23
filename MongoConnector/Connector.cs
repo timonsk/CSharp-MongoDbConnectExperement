@@ -44,27 +44,6 @@ namespace MongoConnector
         private BsonDocument Update<T>(T obj, BsonDocument document)
         {
             document.Remove("_id");
-            //ValidateObject(obj);
-            //var props = obj.GetType().GetProperties().ToList();
-            //var id = props.FirstOrDefault(p => p.Name.ToLower() == "id");
-
-            //if (id != null)
-            //{
-            //    obj.GetType().
-            //    props.Remove(id);
-            //}
-
-            //foreach (var prop in props)
-            //{
-            //    var val = prop.GetValue(obj);
-            //    var name = prop.Name;
-            //    var element = document.FirstOrDefault(e => e.Name == name);
-            //    if (element.Value.ToJson() != val.ToJson())
-            //    {
-            //        document.Set(name, val);
-            //    }
-            //}
-
             return document;
         }
 
